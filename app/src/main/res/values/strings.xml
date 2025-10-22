@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">First Open Simulator</string>
+    <string name="name_hint">Name</string>
+    <string name="email_hint">Email</string>
+    <string name="phone_hint">Phone</string>
+    <string name="send_button">Send First Open</string>
+    <string name="dialog_title">Information</string>
+    <string name="dialog_message">work in progress</string>
+    <string name="dialog_ok">OK</string>
+</resources>
