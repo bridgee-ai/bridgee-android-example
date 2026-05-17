@@ -200,12 +200,14 @@ app/
 - **DryRun**: Defina como `true` para testes, `false` para produção
 
 ### MatchBundle
-Usado para passar dados do usuário para o SDK:
+Usado para passar dados do usuário para o SDK. **Todos os campos são opcionais** — o SDK resolve atribuição mesmo com um bundle vazio, mas mais dados = maior confiança no match:
 - `withName(String)` - Nome do usuário
 - `withEmail(String)` - Email do usuário
 - `withPhone(String)` - Telefone do usuário
 - `withGclid(String)` - Google Click ID
 - `withCustomParam(String, String)` - Parâmetros customizados
+
+> 🔗 **Importante:** os mesmos parâmetros enviados aqui devem ser propagados nas URLs de captura (os **blinks**, ex.: `https://android.seuapp.com.br/?email=...&phone=...&utm_source=...`). O servidor Bridgee compara os sinais dos dois lados (clique vs. instalação) — quanto maior a interseção, mais eficiente e preciso o match.
 
 ### Resposta MatchResponse
 Contém informações de atribuição:
@@ -218,6 +220,15 @@ Contém informações de atribuição:
 - Nunca faça commit de arquivos reais `google-services.json` no controle de versão
 - Mantenha suas credenciais de tenant da Bridgee seguras
 - Use variáveis de ambiente ou configuração segura para apps de produção
+
+## 🆘 Troubleshooting
+
+- **`Default FirebaseApp is not initialized`** → o arquivo real `google-services.json` não foi adicionado em `app/`. Substitua o placeholder e rode **File > Sync Project with Gradle Files**.
+- **Gradle sync falhou** → em Android Studio: **File > Invalidate Caches / Restart**. Se persistir, apague `~/.gradle/caches` e sincronize de novo.
+- **Emulador Android não é detectado** → rode `adb devices`. Se vazio, abra o AVD no Android Studio primeiro ou reinicie o ADB com `adb kill-server && adb start-server`.
+- **`Minimum supported Gradle version is X`** → atualize o wrapper: `./gradlew wrapper --gradle-version <versão>`.
+- **Erro de compile com `compileSdkVersion`** → confirme que tem o SDK correspondente instalado via **Tools > SDK Manager** no Android Studio.
+- **App não recebe UTMs mesmo em produção** → valide no Firebase Analytics DebugView se os dados de aquisição estão chegando (o SDK cuida de propagar os UTMs para o provedor de analytics automaticamente).
 
 ## 📚 Recursos Adicionais
 
