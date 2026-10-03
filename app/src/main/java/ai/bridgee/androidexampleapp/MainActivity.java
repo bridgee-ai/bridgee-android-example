@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import ai.bridgee.android.sdk.BridgeeSDK;
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     private TextInputEditText emailEditText;
     private TextInputEditText phoneEditText;
     private Button sendButton;
+    private CheckBox attributionConsent;
+    private CheckBox nativeGoogle;
     private FirebaseAnalytics mFirebaseAnalytics;
     private BridgeeSDK bridgeeSDK;
     private AnalyticsProvider analyticsProvider;
@@ -44,39 +47,41 @@ public class MainActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.emailEditText);
         phoneEditText = findViewById(R.id.phoneEditText);
         sendButton = findViewById(R.id.sendButton);
+        attributionConsent = findViewById(R.id.attributionConsent);
+        nativeGoogle = findViewById(R.id.nativeGoogle);
+        sendButton.setEnabled(false);
+        attributionConsent.setOnCheckedChangeListener((button, checked) -> updateButton());
+        nativeGoogle.setOnCheckedChangeListener((button, checked) -> updateButton());
     }
 
     private void setupClickListener() {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Send Firebase Analytics custom event
-                sendCustomFirstOpenEvent();
+                if (!canAttribute()) return;
                 // Call Bridgee SDK firstOpen
                 callBridgeeFirstOpen();
             }
         });
     }
 
-    private void sendCustomFirstOpenEvent() {
-        Bundle bundle = new Bundle();
-        bundle.putString("button_name", "send_first_open");
-        bundle.putString("screen_name", "main_form");
-        mFirebaseAnalytics.logEvent("custom_first_open", bundle);
+    private boolean canAttribute() {
+        return attributionConsent != null && attributionConsent.isChecked() && !nativeGoogle.isChecked();
     }
+    private void updateButton() { sendButton.setEnabled(canAttribute()); }
 
     private void initializeAnalyticsProvider() {
         analyticsProvider = new AnalyticsProvider() {
             @Override
             public void logEvent(String name, Bundle params) {
                 // Delegate to Firebase Analytics
-                mFirebaseAnalytics.logEvent(name, params);
+                if (canAttribute() && !name.equals("first_open") && !name.equals("tenant_id_first_open") && !name.equals("purchase")) mFirebaseAnalytics.logEvent(name, params);
             }
 
             @Override
             public void setUserProperty(String name, String value) {
                 // Delegate to Firebase Analytics
-                mFirebaseAnalytics.setUserProperty(name, value);
+                if (canAttribute()) mFirebaseAnalytics.setUserProperty(name, value);
             }
         };
     }
@@ -86,12 +91,13 @@ public class MainActivity extends AppCompatActivity {
         // Note: Replace with your actual tenant credentials
         String tenantId = "tenant-id"; // Tenant ID provided by Bridgee
         String tenantKey = "tenant-key"; // Tenant Key provided by Bridgee
-        Boolean dryRun = false; // Set to false in production
+        Boolean dryRun = true; // Set to false in production
         
         bridgeeSDK = BridgeeSDK.getInstance(this, analyticsProvider, tenantId, tenantKey, dryRun);
     }
 
     private void callBridgeeFirstOpen() {
+        if (!canAttribute()) return;
         // Create MatchBundle with form data using proper methods
         MatchBundle matchBundle = new MatchBundle()
                 .withName(nameEditText.getText().toString())

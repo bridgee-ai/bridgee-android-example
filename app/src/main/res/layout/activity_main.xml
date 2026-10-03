@@ -66,6 +66,9 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <CheckBox android:id="@+id/attributionConsent" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/attribution_consent" />
+    <CheckBox android:id="@+id/nativeGoogle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/native_google" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/attribution_boundary" />
     <Button
         android:id="@+id/sendButton"
         android:layout_width="match_parent"
