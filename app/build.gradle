@@ -1,6 +1,11 @@
 plugins {
     id 'com.android.application'
-    id 'com.google.gms.google-services'
+    id 'com.google.gms.google-services' apply false
+}
+
+// Compile-only verification does not require a client's Firebase configuration.
+if (!project.hasProperty('bridgeeCompileOnly')) {
+    apply plugin: 'com.google.gms.google-services'
 }
 
 android {

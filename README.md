@@ -242,3 +242,9 @@ Contém informações de atribuição:
 2. Crie uma branch para sua feature
 3. Faça suas alterações
 4. Envie um pull request
+
+## Teste de consentimento e atribuição
+
+O botão começa desativado. Marque consentimento para consultar; a opção de Google nativo impede consulta. O provider bloqueia entrega se o consentimento for revogado antes do callback e filtra first_open/purchase das versões legadas. O exemplo usa dryRun e mantém a versão publicada do SDK. Substitua somente a configuração local de tenant/Firebase pelo ambiente de teste autorizado.
+
+O arquivo Firebase versionado é placeholder. A checagem de compilação sem credenciais usa `./gradlew :app:assembleDebug -PbridgeeCompileOnly`; isso não produz um aplicativo Firebase homologado. Para executar em aparelho, instale google-services.json real local e rode o build normal.

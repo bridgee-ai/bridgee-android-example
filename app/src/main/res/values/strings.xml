@@ -7,4 +7,7 @@
     <string name="dialog_title">Information</string>
     <string name="dialog_message">work in progress</string>
     <string name="dialog_ok">OK</string>
+    <string name="attribution_consent">Permitir atribuição neste teste</string>
+    <string name="native_google">Preservar atribuição nativa Google</string>
+    <string name="attribution_boundary">Dry run. Firebase controla first_open; consulta não confirma instalação.</string>
 </resources>
